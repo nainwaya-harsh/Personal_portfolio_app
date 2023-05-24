@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:personal_portfolio/app/modules/home/views/home_view.dart';
+import 'package:personal_portfolio/app/modules/login/views/login_view.dart';
 import 'package:personal_portfolio/app/modules/signup/views/signup_view.dart';
 
 import '../controllers/landing_page_controller.dart';
@@ -35,6 +36,7 @@ class LandingPageView extends GetView<LandingPageController> {
                         onPressed: () {
                           print('Landing Page');
                           Get.to(SignupView());
+                          // Get.to(LoginView());
                         },
                         child: Text('Login/Signup',
                             style: TextStyle(fontSize: 19))),

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "507452418414",
+    "project_id": "personal-af1de",
+    "storage_bucket": "personal-af1de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507452418414:android:fe4bf6d2164c917784397f",
+        "android_client_info": {
+          "package_name": "Decode.personal_portfolio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507452418414-o61pg7nva9dhrghtprks2im4n4snd0t1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTh28UbwVjnKeJB5hrP3pNZndyh2O4rG4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507452418414-o61pg7nva9dhrghtprks2im4n4snd0t1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

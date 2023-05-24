@@ -1,12 +1,39 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:personal_portfolio/app/modules/home/views/home_view.dart';
 import 'package:personal_portfolio/app/modules/signup/views/signup_view.dart';
+import 'package:personal_portfolio/app/modules/signup/views/utils.dart';
 
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
-  const LoginView({Key? key}) : super(key: key);
+  LoginView({Key? key}) : super(key: key);
+  final _formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+
+  void dispose() {
+    Get.delete<LoginController>();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+   void login() {
+    
+    _auth.signInWithEmailAndPassword(
+            email: emailController.text.toString(),
+            password: passwordController.text.toString())
+        .then((value) {
+      // throw Exception('An error occurred');
+      Get.to(()=>HomeView());
+    }).onError((error, stackTrace) {
+      Utils().toastMessage(error.toString());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -44,6 +71,7 @@ class LoginView extends GetView<LoginController> {
                             // Padding(
 
                             Form(
+                              key: _formKey,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -58,28 +86,31 @@ class LoginView extends GetView<LoginController> {
                                     height: 4,
                                   ),
                                   TextField(
+                                      controller: emailController,
                                       decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Color.fromRGBO(75, 75, 75, 0.2),
-                                    prefixIconColor: Colors.deepPurple,
-                                    hintText: 'Enter Your Mail',
-                                    prefixIcon:
-                                        Icon(Icons.mail_outline_rounded),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.deepPurple,
-                                          width: 2,
+                                        filled: true,
+                                        fillColor:
+                                            Color.fromRGBO(75, 75, 75, 0.2),
+                                        prefixIconColor: Colors.deepPurple,
+                                        hintText: 'Enter Your Mail',
+                                        prefixIcon:
+                                            Icon(Icons.mail_outline_rounded),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.deepPurple,
+                                              width: 2,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.deepPurple,
+                                            width: 4,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(50.0),
                                         ),
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.deepPurple,
-                                        width: 4,
-                                      ),
-                                      borderRadius: BorderRadius.circular(50.0),
-                                    ),
-                                  )),
+                                      )),
                                   SizedBox(
                                     height: 20,
                                   ),
@@ -91,6 +122,7 @@ class LoginView extends GetView<LoginController> {
                                     height: 4,
                                   ),
                                   TextField(
+                                      controller: passwordController,
                                       obscureText: true,
                                       decoration: InputDecoration(
                                         filled: true,
@@ -140,7 +172,11 @@ class LoginView extends GetView<LoginController> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           50)))),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          login();
+                                        }
+                                      },
                                       child: Text(
                                         'Login',
                                         style: TextStyle(fontSize: 18.5),

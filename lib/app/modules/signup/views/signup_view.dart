@@ -1,12 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:personal_portfolio/app/modules/login/views/login_view.dart';
+import 'package:personal_portfolio/app/modules/signup/views/utils.dart';
 
 import '../controllers/signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
-  const SignupView({Key? key}) : super(key: key);
+  SignupView({Key? key}) : super(key: key);
+
+  final _formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final contactnumber = TextEditingController();
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void dispose() {
+    Get.delete<SignupController>();
+    emailController.dispose();
+    passwordController.dispose();
+    contactnumber.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +60,7 @@ class SignupView extends GetView<SignupController> {
                             // Padding(
 
                             Form(
+                              key: _formKey,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -58,29 +74,39 @@ class SignupView extends GetView<SignupController> {
                                   SizedBox(
                                     height: 4,
                                   ),
-                                  TextField(
+                                  TextFormField(
+                                      keyboardType: TextInputType.emailAddress,
+                                      controller: emailController,
+                                      validator: (Value) {
+                                        if (Value!.isEmpty) {
+                                          return "E-mail can't be null";
+                                        }
+                                        return null;
+                                      },
                                       decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Color.fromRGBO(75, 75, 75, 0.2),
-                                    prefixIconColor: Colors.deepPurple,
-                                    hintText: 'Enter Your Mail',
-                                    prefixIcon:
-                                        Icon(Icons.mail_outline_rounded),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.deepPurple,
-                                          width: 2,
+                                        filled: true,
+                                        fillColor:
+                                            Color.fromRGBO(75, 75, 75, 0.2),
+                                        prefixIconColor: Colors.deepPurple,
+                                        hintText: 'Enter Your Mail',
+                                        prefixIcon:
+                                            Icon(Icons.mail_outline_rounded),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.deepPurple,
+                                              width: 2,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.deepPurple,
+                                            width: 4,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(50.0),
                                         ),
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.deepPurple,
-                                        width: 4,
-                                      ),
-                                      borderRadius: BorderRadius.circular(50.0),
-                                    ),
-                                  )),
+                                      )),
                                   SizedBox(
                                     height: 20,
                                   ),
@@ -91,7 +117,15 @@ class SignupView extends GetView<SignupController> {
                                   SizedBox(
                                     height: 4,
                                   ),
-                                  TextField(
+                                  TextFormField(
+                                      keyboardType: TextInputType.text,
+                                      controller: passwordController,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Enter Your Password';
+                                        }
+                                        return null;
+                                      },
                                       obscureText: true,
                                       decoration: InputDecoration(
                                         filled: true,
@@ -128,6 +162,7 @@ class SignupView extends GetView<SignupController> {
                                   ),
                                   TextField(
                                       keyboardType: TextInputType.phone,
+                                      controller: contactnumber,
                                       decoration: InputDecoration(
                                         filled: true,
                                         prefixIconColor: Colors.deepPurple,
@@ -176,7 +211,32 @@ class SignupView extends GetView<SignupController> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           50)))),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        print('Signup');
+                                        print(emailController.text.toString());
+                                        print(
+                                            passwordController.text.toString());
+                                        if (_formKey.currentState!.validate()) {
+                                          _auth
+                                              .createUserWithEmailAndPassword(
+                                            email:
+                                                emailController.text.toString(),
+                                            password: passwordController.text
+                                                .toString(),
+                                          )
+                                              .then((value) {
+                                            emailController.clear();
+                                            passwordController.clear();
+                                            contactnumber.clear();
+                                            // throw Exception('An error occurred');
+                                            return null;
+                                          }).onError((error, stackTrace) {
+                                            Utils()
+                                                .toastMessage(error.toString());
+                                            print('hiii');
+                                          });
+                                        }
+                                      },
                                       child: Text(
                                         'Sign Up',
                                         style: TextStyle(fontSize: 18.5),
@@ -189,7 +249,7 @@ class SignupView extends GetView<SignupController> {
                                         Text('      Already Have an account ?'),
                                         TextButton(
                                             onPressed: () {
-                                              Get.to(()=>LoginView());
+                                              Get.to(() => LoginView());
                                             },
                                             child: Text(
                                               'Login',
